@@ -1,0 +1,18 @@
+sendVideoIntent play {cat videos|query} on Youtube
+sendVideoIntent watch {dog|query} from Youtube
+sendVideoIntent play the video {Welcome To Hell|query}
+sendVideoIntent {makes me wonder maroon five|query}
+sendVideoIntent {drunken peasants|query}
+sendVideoIntent {game grumps|query}
+sendVideoIntent play {Jon Tron barbie games|query} from Youtube
+sendVideoIntent watch {peanut butter gamer|query} from Youtube
+sendVideoIntent watch {offspring you are gonna go far kid|query} from Youtube
+sendVideoIntent play {Welcome to Hell|query} From Youtube
+sendVideoIntent play {cat videos|query} on Youtube
+sendVideoIntent play {Drunken Peasants|query}
+sendVideoIntent play {Welcome to Hell|query} on my Chrome Cast
+sendVideoIntent {funny videos|query}
+sendVideoIntent play {makes me wonder by maroon five|query}
+sendVideoIntent play {cats psychic pebbles|query} From Youtube
+sendVideoIntent watch {Jon Tron|query} From Youtube
+sendVideoIntent i want to watch {game grumps|query} From Youtube
