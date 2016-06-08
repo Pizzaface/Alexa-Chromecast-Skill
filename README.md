@@ -2,16 +2,16 @@
 Allows Alexa to interact with the Google ChromeCast using PHP and PyChromeCast Running on a Computer.
 
 #Current Features:
-##Play Youtube Videos (Based on Sample Utterances)
+###Play Youtube Videos (Based on Sample Utterances)
 By saying "Alexa, ask ChromeCast play Jontron Home Improvement", Alexa will send the video URL to your Chromecast Python Script.
 
-##Pause Videos
+###Pause Videos
 By saying "Alexa, ask ChromeCast to Pause", Alexa will pause the Chromecast.
 
-##Resume Videos
+###Resume Videos
 By saying "Alexa ask ChromeCast to resume", Alexa will resume playback.
 
-##Clearing the Queue (Useful for future releases)
+###Clearing the Queue (Useful for future releases)
 By saying "Alexa ask ChromeCast to clear", Alexa will resume playback.
 
 #Explanation
