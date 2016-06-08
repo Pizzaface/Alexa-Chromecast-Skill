@@ -1,0 +1,28 @@
+{
+  "intents": [
+    {
+      "intent": "sendVideoIntent",
+      "slots": [
+        {
+          "name": "query",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "clearVideoIntent"
+    },
+  {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
+    },
+    {
+      "intent": "AMAZON.ResumeIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 <?php
-	$db = new mysqli('','','','');
+	$db = new mysqli('MYSQL_HOST','MYSQL_USER','MYSQL_PASS','MYSQL_DB');
 
 	$searchString   = $_GET['searchString'];
     $correctString  = str_replace(" ","+",urldecode($searchString));
@@ -14,7 +14,7 @@
             exit;
     }
 
-    $query = "INSERT INTO  `commands` (`command` ,`video`) VALUES ('play',  '$videoID')";
+    $query = "INSERT INTO  `sql5122664`.`commands` (`command` ,`video`) VALUES ('play',  '$videoID')";
     $run = mysqli_query($db, $query);
 
     if($run) {

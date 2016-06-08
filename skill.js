@@ -7,6 +7,7 @@
  * http://amzn.to/1LGWsLG
  */
 
+
 // Route the incoming request based on type (LaunchRequest, IntentRequest,
 // etc.) The JSON body of the request is provided in the event parameter.
 exports.handler = function (event, context) {
@@ -80,6 +81,12 @@ function onIntent(intentRequest, session, callback) {
     // Dispatch to your skill's intent handlers
     if ("sendVideoIntent" === intentName) {
         sendToDB(intent, session, callback);
+    } else if ("AMAZON.PauseIntent" === intentName) {
+        pauseVideo(intent, session, callback)
+    } else if ("clearVideoIntent" === intentName) {
+        clearChromecastQueue(intent, session, callback)
+    } else if ("AMAZON.ResumeIntent" === intentName) {
+        resumeVideo(intent, session, callback)
     } else if ("AMAZON.HelpIntent" === intentName) {
         getWelcomeResponse(callback);
     } else if ("AMAZON.StopIntent" === intentName || "AMAZON.CancelIntent" === intentName) {
@@ -114,7 +121,7 @@ function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     var sessionAttributes = {};
     var cardTitle = "Welcome";
-    var speechOutput = "I can send videos to your Chromecast, just give me what you want to search on Youtube.";
+    var speechOutput = "Say a command, or video name.";
     var repromptText = "Say something like, I want to watch The Game Grumps.";
     var shouldEndSession = false;
 
@@ -129,11 +136,15 @@ function sendToDB(intent, session, callback) {
     var cardText = "Hello World!"
     var speechOutput = "";
     var repromptText = "";
-    var shouldEndSession = false;
-    
-    
+    var shouldEndSession = true;
     var http = require('http');
-    var url = "http://jordanpizzahost.comli.com/playVideo.php?searchString=" + encodeURIComponent(querySlot)
+    if (querySlot === undefined) {
+        var shouldEndSession = false;
+        var speechOutput = "Sorry, I didn't catch that, say a command, or video name.";
+        callback(sessionAttributes,
+                buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+    } else {
+    var url = "HOST_OF_SITE/playVideo.php?searchString=" + encodeURIComponent(querySlot)
     console.log(url);
     http.get(url, function(res) {
         var body = '';
@@ -146,7 +157,7 @@ function sendToDB(intent, session, callback) {
             var stringResult = body;
             console.log(stringResult)
             if (stringResult.includes("Successfully") === true) {
-                speechOutput = "I've sent that Video to your ChromeCast! Your Chromecast should start playing in a minute or so.";
+                speechOutput = body;
             } else {
                 speechOutput = "There was an error sending that video to your chromecast";
             }
@@ -157,19 +168,144 @@ function sendToDB(intent, session, callback) {
     }).on('error', function (e) {
         console.log("Got error: ", e);
     });
+    
+    }
+}
+function pauseVideo(intent, session, callback) {
+    var sessionAttributes = {};
+    var cardTitle = "ChromeCast - Paused"
+    var cardText = "Your Chromecast was paused"
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    var http = require('http');
+    var url = "HOST_OF_SITE/pauseVideo.php"
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    speechOutput = "Command Sent";
+                } else {
+                    speechOutput = "There was an error sending that command to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
 }
 
+function resumeVideo(intent, session, callback) {
+    var sessionAttributes = {};
+    var cardTitle = "ChromeCast - Resumed"
+    var cardText = "Your Chromecast was resumed"
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    var http = require('http');
+    var url = "HOST_OF_SITE/resumeVideo.php"
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    speechOutput = "Command Sent";
+                } else {
+                    speechOutput = "There was an error sending that command to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
+}
 
+function getChromeCastList(intent, session, callback) {
+    var sessionAttributes = {};
+    var cardTitle = "ChromeCast - Resumed"
+    var cardText = "Your Chromecast was resumed"
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    var http = require('http');
+    var url = "HOST_OF_SITE/resumeVideo.php"
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    speechOutput = "Command Sent";
+                } else {
+                    speechOutput = "There was an error sending that command to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
+}
 
-
-
-
-
-
-
-
-
-
+function clearChromecastQueue(intent, session, callback) {
+    var sessionAttributes = {};
+    var cardTitle = "ChromeCast - Resumed"
+    var cardText = "Your Chromecast queue was cleared!"
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    var http = require('http');
+    var url = "HOST_OF_SITE/clearVideo.php"
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    speechOutput = "Command Sent";
+                } else {
+                    speechOutput = "There was an error sending that command to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
+}
 
 // --------------- Helpers that build all of the responses -----------------------
 
@@ -182,8 +318,8 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession, c
         
         return {
             outputSpeech: {
-                type: "SSML",
-                ssml: "<speak>" + output + "</speak>"
+                type: "PlainText",
+                text: output
             },
             card: {
                 type: "Simple",
