@@ -11,6 +11,9 @@ By saying "Alexa, ask ChromeCast to Pause", Alexa will pause the Chromecast.
 ###Resume Videos
 By saying "Alexa ask ChromeCast to resume", Alexa will resume playback.
 
+###Changing the Volume
+By saying "Alexa ask ChromeCast to change the volume to 50", Alexa will change the volume to the specified volume
+
 ###Clearing the Queue (Useful for future releases)
 By saying "Alexa ask ChromeCast to clear", Alexa will resume playback.
 
