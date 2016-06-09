@@ -5,6 +5,7 @@ import MySQLdb
 import re
 import sched, time
 from subprocess import call
+from decimal import *
 call("cls", shell=True)
 
 
@@ -20,15 +21,15 @@ def setup():
 	else:
 		print "Found ChromeCast: " + str(chromecastList)
 
-	cast = pychromecast.get_chromecast(friendly_name="CHROMECAST_NAME")
+	cast = pychromecast.get_chromecast(friendly_name="")
 
 ######  PRE-RUN CODE ######
 setup()
 
 ### SETS Database Variable ###
+db = MySQLdb.connect(host="", user='', passwd="", db='')
 
-db = MySQLdb.connect(host="MYSQL_HOST", user='MYSQL_USER', passwd="MYSQL_PASS", db='MYSQL_DB')
-def volumeSet(volume):
+def volumeSet(Volnum):
 	try:
 		cast.wait()
 	except Exception, e:
@@ -38,10 +39,11 @@ def volumeSet(volume):
 		return "error"
 	else:
 		mc = cast.media_controller
-		actual_volume = str(volume / 100)
-		cast.set_volume(actual_volume)
-
-		print "Volume set to: " + str(volume) 
+		getcontext().prec = 3
+		actual_volume = Decimal(int(Volnum)) / Decimal(100)
+		print actual_volume
+		cast.set_volume(Volnum)
+		print "Volume set to: " + str(Decimal(int(Volnum)) / Decimal(100))
 		return "success"
 
 def sendVideo(url):
@@ -116,7 +118,7 @@ def dbConnect():
 	    	idOfQuert = row[0]
 	    	volume = row[2]
 	    	print "user wants to set volume to " + str(volume)
-	    	status = volumeSet(volumeSet)	
+	    	status = volumeSet(volume)	
 
 	    if status == "success":
 	    	cur.execute("DELETE FROM commands WHERE id=" + str(idOfQuert))
@@ -144,7 +146,7 @@ def checkChromeCasts():
 
 
 
-cast = pychromecast.get_chromecast(friendly_name="Jordan's Chromecast")
+cast = pychromecast.get_chromecast(friendly_name="")
 while True:
     dbConnect()
     time.sleep(2)

@@ -145,7 +145,7 @@ function sendToDB(intent, session, callback) {
         callback(sessionAttributes,
                 buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
     } else {
-    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=sendVideo&searchString=" + encodeURIComponent(querySlot)
+    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=sendVideo&searchString=" + encodeURIComponent(querySlot)
     console.log(url);
     http.get(url, function(res) {
         var body = '';
@@ -180,7 +180,7 @@ function pauseVideo(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=pause"
+    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=pause"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -207,37 +207,46 @@ function pauseVideo(intent, session, callback) {
 }
 function setVideoVolume(intent, session, callback) {
     var sessionAttributes = {};
-    var cardTitle = "ChromeCast - Paused"
+    var cardTitle = "ChromeCast - Volume Set"
     var volume = intent.slots.volume.value
-    var cardText = "Your Chromecast's Volume was set to " + volume
+    var cardText = "";
     var speechOutput = "";
     var repromptText = "";
     var shouldEndSession = true;
-    var http = require('http');
-    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=volume&vol=" + volume
-        console.log(url);
-        http.get(url, function(res) {
-            var body = '';
-    
-            res.on('data', function (chunk) {
-                body += chunk;
-            });
-    
-            res.on('end', function () {
-                var stringResult = body;
-                console.log(stringResult)
-                if (stringResult.includes("Successfully") === true) {
-                    speechOutput = "Command Sent";
-                } else {
-                    speechOutput = "There was an error sending that command to your chromecast";
-                }
-                
-                callback(sessionAttributes,
+    console.log("Variables Set")
+    if (parseInt(volume) > 100) {
+        var speechOutput = "Sorry, I can only set volume to values 0 to 100";
+        callback(sessionAttributes,
                     buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
-            });
-        }).on('error', function (e) {
-            console.log("Got error: ", e);
+    }
+    var cardText = "Your Chromecast's Volume was set to " + volume
+    var http = require('http');
+    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=volume&vol=" + volume
+    console.log(url);
+    http.get(url, function(res) {
+        var body = '';
+
+        res.on('data', function (chunk) {
+            body += chunk;
         });
+
+        res.on('end', function () {
+            var stringResult = body;
+            console.log(stringResult)
+            if (stringResult.includes("Successfully") === true) {
+                var speechOutput = "Volume Set to " + volume
+            } else {
+                speechOutput = "There was an error sending that command to your chromecast";
+            }
+            
+            callback(sessionAttributes,
+                buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+        });
+    }).on('error', function (e) {
+        console.log("Got error: ", e);
+    });
+
+    
 }
 
 function resumeVideo(intent, session, callback) {
@@ -248,7 +257,7 @@ function resumeVideo(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=resume"
+    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=resume"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -282,7 +291,7 @@ function getChromeCastList(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://YOUR_WEBSITE_HERE/resumeVideo.php"
+    var url = "http://jordanpizzahost.comli.com/resumeVideo.php"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -316,7 +325,7 @@ function clearChromecastQueue(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=clearQueue"
+    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=clearQueue"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
