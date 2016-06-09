@@ -3,6 +3,10 @@ clearVideoIntent clear queue
 clearVideoIntent clear all videos
 clearVideoIntent clear commands
 clearVideoIntent clear videos
+setVolumeIntent set volume to {volume}
+setVolumeIntent volume {volume}
+setVolumeIntent set the volume to {volume}
+setVolumeIntent volume to {volume}
 sendVideoIntent play {cat videos|query} on Youtube
 sendVideoIntent watch {dog|query} from Youtube
 sendVideoIntent play the video {Welcome To Hell|query}
@@ -584,6 +588,7 @@ sendVideoIntent {game grumps bloodborne  nine |query}
 sendVideoIntent {game grumps sonic boom  nine |query}
 sendVideoIntent {game grumps shovel knight  nine |query}
 sendVideoIntent {drunken peasants brett keane|query}
+sendVideoIntent {drunken peasants brett keane we were there|query}
 sendVideoIntent {drunken peasants milo|query}
 sendVideoIntent {drunken peasants meetup|query}
 sendVideoIntent {drunken peasants the beast|query}

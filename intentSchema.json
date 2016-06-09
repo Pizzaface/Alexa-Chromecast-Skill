@@ -10,6 +10,15 @@
       ]
     },
     {
+      "intent": "setVolumeIntent",
+      "slots": [
+        {
+          "name": "volume",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
       "intent": "clearVideoIntent"
     },
   {
