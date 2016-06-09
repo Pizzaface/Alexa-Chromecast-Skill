@@ -7,7 +7,6 @@
  * http://amzn.to/1LGWsLG
  */
 
-
 // Route the incoming request based on type (LaunchRequest, IntentRequest,
 // etc.) The JSON body of the request is provided in the event parameter.
 exports.handler = function (event, context) {
@@ -85,6 +84,8 @@ function onIntent(intentRequest, session, callback) {
         pauseVideo(intent, session, callback)
     } else if ("clearVideoIntent" === intentName) {
         clearChromecastQueue(intent, session, callback)
+    } else if ("setVolumeIntent" === intentName) {
+        setVideoVolume(intent, session, callback)
     } else if ("AMAZON.ResumeIntent" === intentName) {
         resumeVideo(intent, session, callback)
     } else if ("AMAZON.HelpIntent" === intentName) {
@@ -144,7 +145,7 @@ function sendToDB(intent, session, callback) {
         callback(sessionAttributes,
                 buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
     } else {
-    var url = "HOST_OF_SITE/playVideo.php?searchString=" + encodeURIComponent(querySlot)
+    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=sendVideo&searchString=" + encodeURIComponent(querySlot)
     console.log(url);
     http.get(url, function(res) {
         var body = '';
@@ -179,7 +180,41 @@ function pauseVideo(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "HOST_OF_SITE/pauseVideo.php"
+    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=pause"
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    speechOutput = "Command Sent";
+                } else {
+                    speechOutput = "There was an error sending that command to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
+}
+function setVideoVolume(intent, session, callback) {
+    var sessionAttributes = {};
+    var cardTitle = "ChromeCast - Paused"
+    var volume = intent.slots.volume.value
+    var cardText = "Your Chromecast's Volume was set to " + volume
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    var http = require('http');
+    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=volume&vol=" + volume
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -213,7 +248,7 @@ function resumeVideo(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "HOST_OF_SITE/resumeVideo.php"
+    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=resume"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -247,7 +282,7 @@ function getChromeCastList(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "HOST_OF_SITE/resumeVideo.php"
+    var url = "http://YOUR_WEBSITE_HERE/resumeVideo.php"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -281,7 +316,7 @@ function clearChromecastQueue(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "HOST_OF_SITE/clearVideo.php"
+    var url = "http://YOUR_WEBSITE_HERE/playVideo.php?command=clearQueue"
         console.log(url);
         http.get(url, function(res) {
             var body = '';

@@ -4,20 +4,53 @@ import subprocess
 import MySQLdb
 import re
 import sched, time
+from subprocess import call
+call("cls", shell=True)
 
-chromecastList = list(pychromecast.get_chromecasts_as_dict().keys())
-if chromecastList == []:
-	print "Shit, we didn't find any Chromecasts..."
-else:
-	print "Found ChromeCast: " + str(chromecastList)
 
-cast = pychromecast.get_chromecast(friendly_name="CHROMECAST_FRIENDLY_NAME")
+
+
+
+
+def setup():
+	chromecastList = list(pychromecast.get_chromecasts_as_dict().keys())
+	if chromecastList == []:
+		print "Shit, we didn't find any Chromecasts..."
+		setup()
+	else:
+		print "Found ChromeCast: " + str(chromecastList)
+
+	cast = pychromecast.get_chromecast(friendly_name="CHROMECAST_NAME")
+
+######  PRE-RUN CODE ######
+setup()
+
+### SETS Database Variable ###
+
+db = MySQLdb.connect(host="MYSQL_HOST", user='MYSQL_USER', passwd="MYSQL_PASS", db='MYSQL_DB')
+def volumeSet(volume):
+	try:
+		cast.wait()
+	except Exception, e:
+		print ("There was a problem connecting to the Chromecast.")
+		print str(e)
+		setup()
+		return "error"
+	else:
+		mc = cast.media_controller
+		actual_volume = str(volume / 100)
+		cast.set_volume(actual_volume)
+
+		print "Volume set to: " + str(volume) 
+		return "success"
 
 def sendVideo(url):
 	try:
 		cast.wait()
-	except:
+	except Exception, e:
 		print ("There was a problem connecting to the Chromecast.")
+		print str(e)
+		setup()
 		return "error"
 	else:
 		mc = cast.media_controller
@@ -29,12 +62,13 @@ def sendVideo(url):
 def pauseVideo():
 	try:
 		cast.wait()
-	except:
+	except Exception, e:
 		print ("There was a problem connecting to the Chromecast.")
+		print str(e)
+		setup()
 		return "error"
 	else:
 		mc = cast.media_controller
-		time.sleep(2)
 		mc.pause()
 
 		print "Video Paused."
@@ -43,58 +77,56 @@ def pauseVideo():
 def resumeVideo():
 	try:
 		cast.wait()
-	except:
+	except Exception, e:
 		print ("There was a problem connecting to the Chromecast.")
+		print str(e)
+		setup()
 		return "error"
 	else:
 		mc = cast.media_controller
-		time.sleep(2)
 		mc.play()
 		print "Video Resumed."
 		return "success"
 
-
 def dbConnect():
-	db = MySQLdb.connect(host="MYSQL_HOST", user='MYSQL_USER', passwd="MYSQL_PASSWORD", db='MYSQL_DB')
 	cur = db.cursor()
 
 	# Use all the SQL you like
-	try:
-		cur.execute("SELECT * FROM commands WHERE run = 0 ORDER BY TIMESTAMP DESC LIMIT 1 ;")
-	except:
-		print "Nothing to Cast."
-	else:
-		# print all the first cell of all the rows
-		for row in cur.fetchall():
-		    if row[1] == "play":
-		    	url = row[2]
-		    	print "user wants to watch: " + url
-		    	idOfQuert = row[0]
-		    	status = sendVideo(url)
-		    	
+	cur.execute("SELECT * FROM commands WHERE run = 0 ORDER BY TIMESTAMP DESC LIMIT 1 ;")
 
-		    if row[1] == "pause":
-		    	idOfQuert = row[0]
-		    	print "user wants to pause playback"
-		    	status = pauseVideo()
+	for row in cur.fetchall():
+	    if row[1] == "play":
+	    	url = row[2]
+	    	print "user wants to watch: " + url
+	    	idOfQuert = row[0]
+	    	status = sendVideo(url)
+	    	
 
-		    if row[1] == "resume":
-		    	idOfQuert = row[0]
-		    	print "user wants to resume playback"
-		    	status = resumeVideo()	
+	    if row[1] == "pause":
+	    	idOfQuert = row[0]
+	    	print "user wants to pause playback"
+	    	status = pauseVideo()
 
-		    if status == "success":
-		    	cur.execute("DELETE FROM commands WHERE id=" + str(idOfQuert))
-		    	print "Command Completed."
-		db.close()
+	    if row[1] == "resume":
+	    	idOfQuert = row[0]
+	    	print "user wants to resume playback"
+	    	status = resumeVideo()	
 
-## FOR FUTURE DEVELOPMENTS ##
+	    if row[1] == "volume":
+	    	idOfQuert = row[0]
+	    	volume = row[2]
+	    	print "user wants to set volume to " + str(volume)
+	    	status = volumeSet(volumeSet)	
+
+	    if status == "success":
+	    	cur.execute("DELETE FROM commands WHERE id=" + str(idOfQuert))
+	    	print "Command Completed."
+
 def checkChromeCasts():
 	chromecastList = list(pychromecast.get_chromecasts_as_dict().keys())
 	if chromecastList == []:
 		print "Shit, we didn't find any Chromecasts..."
 	for x in range(len(chromecastList)):
-		db = MySQLdb.connect(host="MYSQL_HOST", user='MYSQL_USER', passwd="MYSQL_PASSWORD", db='MYSQL_DB')
 		cur = db.cursor()
 		escaped = db.escape_string(chromecastList[x])
 		cur.execute("SELECT * FROM saved_chromecasts WHERE `friendly_name` = \""+ str(escaped) +"\" LIMIT 1 ;")
@@ -108,10 +140,13 @@ def checkChromeCasts():
 
 			if not exists == True:
 				print escaped + " was added."
-				print "INSERT INTO  `saved_chromecasts` (`friendly_name`) VALUES (`"+ str(escaped) + "`);"
 				cur.execute("INSERT INTO  `saved_chromecasts` (`friendly_name`) VALUES (`"+ str(escaped) + "`);")
 
+
+
+cast = pychromecast.get_chromecast(friendly_name="Jordan's Chromecast")
 while True:
     dbConnect()
+    time.sleep(2)
 
 
