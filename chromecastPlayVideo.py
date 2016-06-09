@@ -41,8 +41,8 @@ def volumeSet(Volnum):
 		mc = cast.media_controller
 		getcontext().prec = 3
 		actual_volume = Decimal(int(Volnum)) / Decimal(100)
-		print actual_volume
-		cast.set_volume(Volnum)
+		actual_volume = float(actual_volume)
+		cast.set_volume(actual_volume)
 		print "Volume set to: " + str(Decimal(int(Volnum)) / Decimal(100))
 		return "success"
 
