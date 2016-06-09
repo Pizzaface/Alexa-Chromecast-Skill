@@ -24,10 +24,14 @@ By saying "Alexa ask ChromeCast to clear", Alexa will resume playback.
 
 ##Python
   Using PyChromeCast (https://github.com/balloob/pychromecast), the python script will run at a set interval, continuously checking the database for new videos. When it detects a new row has been added, it loads youtube-dl, a command-line program to grab the stream URL and passes it to PyChromeCast, which sends it to your ChromeCast.
-  
+
+#Issues
+  - Sometimes PyChromecast doesn't detect the chromecasts.
+
 #To Do
   - Kill ChromeCast App
   - Get Duration of Media and allow for playlist.
+  - Allow for interuptions in internet and keep running
 
 #Setup
   - Install PyChromecast to your Desired PC (pip install pychromecast)
