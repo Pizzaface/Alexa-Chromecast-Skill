@@ -25,5 +25,14 @@ By saying "Alexa ask ChromeCast to clear", Alexa will resume playback.
 #To Do
   - Kill ChromeCast App
   - Get Duration of Media and allow for playlist.
-  - 
+
+#Setup
+  - Install PyChromecast to your Desired PC (pip install pychromecast)
+  - Install build.sql to your MySQL server
+  - Get a Youtube API Key (Available [https://console.developers.google.com/](here)
+  - Replace all connection strings
+  - Setup Skill.js In (http://aws.amazon.com/)[Lambda]
+  - Set up skill in the (http://developer.amazon.com)[Developer's Console for Amazon] using sample-utterances.txt and intentSchema.json
+  - Run Python Script.
+  - Voila!
 
