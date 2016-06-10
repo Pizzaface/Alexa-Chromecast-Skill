@@ -80,12 +80,16 @@ function onIntent(intentRequest, session, callback) {
     // Dispatch to your skill's intent handlers
     if ("sendVideoIntent" === intentName) {
         sendToDB(intent, session, callback);
+    } else if ("connectToChomeCastIntent" === intentName) {
+        connectToChromeCast(intent, session, callback);
     } else if ("AMAZON.PauseIntent" === intentName) {
         pauseVideo(intent, session, callback)
     } else if ("clearVideoIntent" === intentName) {
         clearChromecastQueue(intent, session, callback)
     } else if ("setVolumeIntent" === intentName) {
         setVideoVolume(intent, session, callback)
+    } else if ("gPlayMusicIntent" === intentName) {
+        gPlayMusic(intent, session, callback)
     } else if ("AMAZON.ResumeIntent" === intentName) {
         resumeVideo(intent, session, callback)
     } else if ("AMAZON.HelpIntent" === intentName) {
@@ -129,8 +133,8 @@ function getWelcomeResponse(callback) {
     callback(sessionAttributes,
         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
-
-function sendToDB(intent, session, callback) {
+function gplayMusic(intent, session, callback) {
+    console.log("Hello World!")
     var sessionAttributes = {};
     var querySlot = intent.slots.query.value;
     var cardTitle = querySlot
@@ -138,14 +142,58 @@ function sendToDB(intent, session, callback) {
     var speechOutput = "";
     var repromptText = "";
     var shouldEndSession = true;
-    var http = require('http');
+   
     if (querySlot === undefined) {
         var shouldEndSession = false;
         var speechOutput = "Sorry, I didn't catch that, say a command, or video name.";
         callback(sessionAttributes,
                 buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
     } else {
-    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=sendVideo&searchString=" + encodeURIComponent(querySlot)
+         var http = require('http');
+        var url = "http://YOUR_HOST_HERE/playVideo.php?command=gPlayMusic&searchString=" + encodeURIComponent(querySlot)
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    speechOutput = "Music Command Sent";
+                } else {
+                    speechOutput = "There was an error sending that video to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
+    
+    }
+}
+
+function connectToChromeCast(intent, session, callback) {
+    console.log("Hello World!")
+    var sessionAttributes = {};
+    var querySlot = intent.slots.CastName.value;
+    var cardTitle = ""
+    var cardText = "Hello World!"
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    
+    if (querySlot === undefined) {
+        var url = "http://YOUR_HOST_HERE/playVideo.php?command=connectToChromeCast"
+    } else {
+        var url = "http://YOUR_HOST_HERE/playVideo.php?command=connectToChromeCast&chomecast=" + encodeURIComponent(querySlot)
+    }
+    var http = require('http');
     console.log(url);
     http.get(url, function(res) {
         var body = '';
@@ -157,8 +205,11 @@ function sendToDB(intent, session, callback) {
         res.on('end', function () {
             var stringResult = body;
             console.log(stringResult)
-            if (stringResult.includes("Successfully") === true) {
-                speechOutput = body;
+            if (stringResult.includes("Successful") === true) {
+                var list_of_casts = stringResult.split(" - ");
+                list_of_casts = list_of_casts.toString()
+                list_of_casts = list_of_casts.replace("Successful,", "")
+                speechOutput = "The Chromecasts: " + list_of_casts + " are available";
             } else {
                 speechOutput = "There was an error sending that video to your chromecast";
             }
@@ -170,8 +221,10 @@ function sendToDB(intent, session, callback) {
         console.log("Got error: ", e);
     });
     
-    }
 }
+
+
+
 function pauseVideo(intent, session, callback) {
     var sessionAttributes = {};
     var cardTitle = "ChromeCast - Paused"
@@ -180,7 +233,7 @@ function pauseVideo(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=pause"
+    var url = "http://YOUR_HOST_HERE/playVideo.php?command=pause"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -214,14 +267,14 @@ function setVideoVolume(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     console.log("Variables Set")
-    if (parseInt(volume) > 100) {
+    if (parseInt(volume) > 100 || parseInt(volume) < 0) {
         var speechOutput = "Sorry, I can only set volume to values 0 to 100";
         callback(sessionAttributes,
                     buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
     }
     var cardText = "Your Chromecast's Volume was set to " + volume
     var http = require('http');
-    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=volume&vol=" + volume
+    var url = "http://YOUR_HOST_HERE/playVideo.php?command=volume&vol=" + volume
     console.log(url);
     http.get(url, function(res) {
         var body = '';
@@ -248,7 +301,48 @@ function setVideoVolume(intent, session, callback) {
 
     
 }
-
+function sendToDB(intent, session, callback) {
+    var sessionAttributes = {};
+    var querySlot = intent.slots.query.value;
+    var cardTitle = querySlot
+    var cardText = "Hello World!"
+    var speechOutput = "";
+    var repromptText = "";
+    var shouldEndSession = true;
+    var http = require('http');
+    if (querySlot === undefined) {
+        var shouldEndSession = false;
+        var speechOutput = "Sorry, I didn't catch that, say a command, or video name.";
+        callback(sessionAttributes,
+                buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+    } else {
+        var url = "http://YOUR_HOST_HERE/playVideo.php?command=sendVideo&searchString=" + encodeURIComponent(querySlot)
+        console.log(url);
+        http.get(url, function(res) {
+            var body = '';
+    
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+    
+            res.on('end', function () {
+                var stringResult = body;
+                console.log(stringResult)
+                if (stringResult.includes("Successfully") === true) {
+                    var speechOutput = body;
+                } else {
+                    var speechOutput = "There was an error sending that video to your chromecast";
+                }
+                
+                callback(sessionAttributes,
+                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
+    
+    }
+}
 function resumeVideo(intent, session, callback) {
     var sessionAttributes = {};
     var cardTitle = "ChromeCast - Resumed"
@@ -257,7 +351,7 @@ function resumeVideo(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=resume"
+    var url = "http://YOUR_HOST_HERE/playVideo.php?command=resume"
         console.log(url);
         http.get(url, function(res) {
             var body = '';
@@ -282,41 +376,6 @@ function resumeVideo(intent, session, callback) {
             console.log("Got error: ", e);
         });
 }
-
-function getChromeCastList(intent, session, callback) {
-    var sessionAttributes = {};
-    var cardTitle = "ChromeCast - Resumed"
-    var cardText = "Your Chromecast was resumed"
-    var speechOutput = "";
-    var repromptText = "";
-    var shouldEndSession = true;
-    var http = require('http');
-    var url = "http://jordanpizzahost.comli.com/resumeVideo.php"
-        console.log(url);
-        http.get(url, function(res) {
-            var body = '';
-    
-            res.on('data', function (chunk) {
-                body += chunk;
-            });
-    
-            res.on('end', function () {
-                var stringResult = body;
-                console.log(stringResult)
-                if (stringResult.includes("Successfully") === true) {
-                    speechOutput = "Command Sent";
-                } else {
-                    speechOutput = "There was an error sending that command to your chromecast";
-                }
-                
-                callback(sessionAttributes,
-                    buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession,cardText));
-            });
-        }).on('error', function (e) {
-            console.log("Got error: ", e);
-        });
-}
-
 function clearChromecastQueue(intent, session, callback) {
     var sessionAttributes = {};
     var cardTitle = "ChromeCast - Resumed"
@@ -325,7 +384,7 @@ function clearChromecastQueue(intent, session, callback) {
     var repromptText = "";
     var shouldEndSession = true;
     var http = require('http');
-    var url = "http://jordanpizzahost.comli.com/playVideo.php?command=clearQueue"
+    var url = "http://YOUR_HOST_HERE/playVideo.php?command=clearQueue"
         console.log(url);
         http.get(url, function(res) {
             var body = '';

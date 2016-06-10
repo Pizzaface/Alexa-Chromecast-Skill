@@ -1,6 +1,7 @@
 <?php
     
     $db = new mysqli('','','','');
+
     if($_GET['command'] == "sendVideo") {
 
         $searchString   = $_GET['searchString'];
@@ -27,7 +28,7 @@
         }
 
 
-        $query = "INSERT INTO  `sql5122664`.`commands` (`command` ,`slot`) VALUES ('play',  '$videoID')";
+        $query = "INSERT INTO  `commands` (`command` ,`slot`) VALUES ('play',  '$videoID')";
         $run = mysqli_query($db, $query);
 
         if($run) {
@@ -37,9 +38,35 @@
         }
     }
     
+    if($_GET['command'] == "connectToChromeCast" && !isset($_GET['chromecast'])) {
+        $query = "SELECT friendly_name FROM saved_chromecasts WHERE `active` = 1";
+        $run = mysqli_query($db, $query);
+
+        if($run) {
+            print "Successful - ";
+            while ($row=mysqli_fetch_row($run)) {
+                $chromecast_list[] = $row[0];
+            }
+        } else {
+            echo "The command could not be added.";
+        }
+        foreach ($chromecast_list as $row) {
+            print $row . " - ";
+        }
+    } elseif (isset($_GET['chromecast'])) {
+        $chromecast_name = mysqli_real_escape_string($db, $_GET['chromecast']);
+        $query = "INSERT INTO  `commands` (`command`, `slot`) VALUES ('connectToChromeCast', '$chromecast_name')";
+        $run = mysqli_query($db, $query);
+
+        if($run) {
+            echo "Command was added Successfully";
+        } else {
+            echo "The command could not be added.";
+        }
+    }
 
     if($_GET['command'] == "resume"){
-        $query = "INSERT INTO  `sql5122664`.`commands` (`command`, `slot`) VALUES ('resume', 'none')";
+        $query = "INSERT INTO  `commands` (`command`, `slot`) VALUES ('resume', 'none')";
         $run = mysqli_query($db, $query);
 
         if($run) {
@@ -50,7 +77,7 @@
     }
 
     if($_GET['command'] == "pause"){
-        $query = "INSERT INTO  `sql5122664`.`commands` (`command`, `slot`) VALUES ('pause', 'none')";
+        $query = "INSERT INTO  `commands` (`command`, `slot`) VALUES ('pause', 'none')";
         $run = mysqli_query($db, $query);
 
         if($run) {
@@ -73,7 +100,7 @@
 
     if($_GET['command'] == "volume"){
         $volume = $_GET['vol'];
-        $query = "INSERT INTO  `sql5122664`.`commands` (`command`, `slot`) VALUES ('volume', '$volume')";
+        $query = "INSERT INTO  `commands` (`command`, `slot`) VALUES ('volume', '$volume')";
         print $query;
         $run = mysqli_query($db, $query);
 

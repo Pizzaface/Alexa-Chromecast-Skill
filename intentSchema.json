@@ -10,6 +10,28 @@
       ]
     },
     {
+      "intent": "connectToChomeCastIntent",
+      "slots": [
+        {
+          "name": "CastName",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "gPlayMusicIntent",
+      "slots": [
+        {
+          "name": "query",
+          "type": "AMAZON.LITERAL"
+        },
+        {
+          "name":"media",
+          "type": "TYPE_OF_MEDIA"
+        }
+      ]
+    },
+    {
       "intent": "setVolumeIntent",
       "slots": [
         {
