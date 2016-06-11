@@ -7,8 +7,10 @@ By saying "Alexa, ask ChromeCast play Jontron Home Improvement", Alexa will send
 
 ###Play Google Play Music (All-Access Not Supported)
 By asking Alexa, "Play Never gonna give you up" you can play a song.
-"             ", "Play the artist Two Steps from Hell", you can play an artist.
-"             ", "Play the album 99 luftbullons", you can play an album.
+
+By asking Alexa, "Play the artist Two Steps from Hell", you can play an artist.
+
+By asking Alexa, "Play the album 99 luftbullons", you can play an album.
 
 ###Specificing Chromecasts (UNTESTED)
 By asking Alexa, "Connect to Living Room", she should set the casting Chromecast to "Living Room"
