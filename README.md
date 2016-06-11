@@ -45,7 +45,7 @@ By saying "Alexa ask ChromeCast to clear", Alexa will resume playback.
   - Install PyChromecast to your Desired PC (pip install pychromecast)
   - Install build.sql to your MySQL server
   - Get a Youtube API Key (Available [here](https://console.developers.google.com))
-  - Replace all connection strings
+  - Replace all connection strings using set-up.py
   - Setup Skill.js In [Lambda](http://aws.amazon.com/)
   - Set up skill in the Alexa Portal at http://developer.amazon.com using sample-utterances.txt and intentSchema.json
   - Run Python Script.
