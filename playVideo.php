@@ -1,6 +1,6 @@
 <?php
     
-    $db = new mysqli('','','','');
+    $db = new mysqli('MYSQL_HOST','MYSQL_USER','MYSQL_PASS','MYSQL_NAME');
 
     if($_GET['command'] == "sendVideo") {
 
