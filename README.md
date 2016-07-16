@@ -1,4 +1,6 @@
 # Alexa-Chromecast-Skill
+THIS PROJECT HAS BEEN DEPRECIATED, AND I WILL NO LONGER BE WORKING ON IT, AS A NEW VERSION IS IN THE WORKS.
+
 Allows Alexa to interact with the Google ChromeCast using PHP and PyChromeCast Running on a Computer.
 
 #Current Features:
