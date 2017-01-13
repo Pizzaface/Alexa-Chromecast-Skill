@@ -32,7 +32,7 @@ setup(chromecast_name)
 
 ### SETS Database Variable ###
 
-db = MySQLdb.connect(host="", user='', passwd="", db='')
+db = MySQLdb.connect(host="MYSQL_HOST", user='MYSQL_USER', passwd="MYSQL_PASS", db='MYSQL_NAME')
 
 
 def volumeSet(Volnum):
@@ -124,12 +124,12 @@ def gpMusicPlaySong(songName, type_of_media):
 				if url == "":
 					print "Either Someone else is streaming, or something happened."
 				else:
-					print "Sendinggggg"
-					"""mc = cast.media_controller
-					mc.play_media(url, "audio/mp3")"""
+					mc = cast.media_controller
+					mc.play_media(url, "audio/mp3")
 					print "Song " + titleOfSong + " Sent"
-					time.sleep(actual_duration)
-					continue
+					if not type_of_media == "song":
+						time.sleep(actual_duration)
+						continue
 			else:
 				return "success"
 
